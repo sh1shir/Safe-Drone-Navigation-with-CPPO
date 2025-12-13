@@ -1,0 +1,41 @@
+# =============================
+# CPPO Training Hyperparameters
+# =============================
+
+algo:
+  gamma: 0.99
+  lam: 0.95
+  clip_ratio: 0.2
+  target_kl: 0.015
+  train_iters: 80
+  max_ep_len: 800
+  steps_per_epoch: 4000
+  epochs: 150
+  cost_limit: 5.0
+  penalty_lr: 0.01         
+  reward_scale: 1.0
+
+policy:
+  hidden_sizes: [64, 64]
+  activation: tanh
+  lr: 3e-4
+
+value_function:
+  lr: 1e-3
+
+cost_value_function:
+  lr: 1e-3
+
+env:
+  name: SafeHoverAviary
+  gui: False
+  ctrl_freq: 30
+  pyb_freq: 240
+  obstacle_pos: [0.7, 0.0, 1.0]
+  safety_radius: 0.30
+
+logging:
+  save_every: 10
+  eval_every: 10
+  model_dir: "./results/models"
+  log_dir: "./results/logs"

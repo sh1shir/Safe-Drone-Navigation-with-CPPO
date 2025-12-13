@@ -1,0 +1,7 @@
+safe_radius: 0.5
+obstacle_positions:
+  - [1.0, 0.5, 1.0]
+  - [-0.8, -0.5, 1.0]
+ctrl_freq: 30
+pyb_freq: 240
+gui: false

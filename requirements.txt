@@ -1,0 +1,6 @@
+torch>=1.12
+gymnasium
+gym-pybullet-drones
+pybullet
+numpy
+matplotlib
