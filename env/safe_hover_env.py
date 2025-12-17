@@ -8,10 +8,7 @@ from gym_pybullet_drones.utils.enums import DroneModel, Physics, ActionType, Obs
 class SafeHoverAviary(BaseRLAviary):
     """
     SafeHoverAviary: single-drone environment with spherical obstacles and a cost signal.
-    Returns Gymnasium-style (obs, reward, terminated, truncated, info) from step().
-    info["cost"] is 1 when drone within safe_distance of any obstacle, else 0.
     """
-
     def __init__(self,
                  drone_model: DroneModel = DroneModel.CF2X,
                  initial_xyzs=None,
@@ -29,7 +26,7 @@ class SafeHoverAviary(BaseRLAviary):
         # config
         self.target_pos = np.array([0, 0, 1])
         self.episode_len_sec = 8
-        self.MAX_OBSTACLES = 3  # Define this as class attribute
+        self.MAX_OBSTACLES = 3
 
         self.obstacle_positions = [] if obstacle_positions is None else [np.array(x) for x in obstacle_positions]
         if obstacle_radii is None:
@@ -54,8 +51,6 @@ class SafeHoverAviary(BaseRLAviary):
             act=act
         )
         
-        # CRITICAL: Update observation space to include obstacle features
-        # This must happen AFTER super().__init__() so base observation_space exists
         base_obs_dim = self.observation_space.shape[0] 
         obstacle_features_per_obs = 6  # [rel_x, rel_y, rel_z, distance, radius, exists]
         total_obs_dim = base_obs_dim + (self.MAX_OBSTACLES * obstacle_features_per_obs)
@@ -72,7 +67,6 @@ class SafeHoverAviary(BaseRLAviary):
         self._spawn_obstacles()
 
     def _get_pybullet_client(self):
-        # try to get the pybullet client used by the aviary, else fallback to global p
         if hasattr(self, "_p"):
             return self._p, getattr(self, "_client", -1)
         return p, -1
@@ -160,7 +154,7 @@ class SafeHoverAviary(BaseRLAviary):
     
     def _computeReward(self):
         pos = self._getDroneStateVector(0)[0:3]
-        vel = self._getDroneStateVector(0)[10:13]  # Get velocity
+        vel = self._getDroneStateVector(0)[10:13]
         target = self.target_pos
         dist = np.linalg.norm(pos - target)
         

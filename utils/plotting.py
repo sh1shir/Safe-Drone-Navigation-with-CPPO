@@ -24,11 +24,14 @@ def plot_training(log_path, out_dir="results/plots"):
     costs = [float(r["avg_cost"]) for r in rows]
     lambdas = [float(r["lambda"]) for r in rows]
 
+    goals = [int(r.get("goal_reached", 0)) for r in rows]
+    goal_rates = [float(r.get("goal_reach_rate", 0.0)) for r in rows]
+
     # --- Reward ---
     plt.figure(figsize=(7,4))
-    plt.plot(epochs, rewards, marker="o")
+    plt.plot(epochs, rewards, linewidth=2, color='b')
     plt.xlabel("Epoch")
-    plt.ylabel("Epoch total reward")
+    plt.ylabel("Average reward per step")
     plt.title("Reward per epoch")
     plt.grid(True)
     plt.savefig(os.path.join(out_dir, "reward1.png"))
@@ -36,7 +39,7 @@ def plot_training(log_path, out_dir="results/plots"):
 
     # --- Cost ---
     plt.figure(figsize=(7,4))
-    plt.plot(epochs, costs, marker="o")
+    plt.plot(epochs, costs, linewidth=2, color='r')
     plt.xlabel("Epoch")
     plt.ylabel("Average cost")
     plt.title("Average cost per epoch")
@@ -46,7 +49,7 @@ def plot_training(log_path, out_dir="results/plots"):
 
     # --- Lambda ---
     plt.figure(figsize=(7,4))
-    plt.plot(epochs, lambdas, marker="o")
+    plt.plot(epochs, lambdas, linewidth=2, color='r')
     plt.xlabel("Epoch")
     plt.ylabel("Lambda (Lagrange multiplier)")
     plt.title("Lambda over training")
@@ -54,15 +57,34 @@ def plot_training(log_path, out_dir="results/plots"):
     plt.savefig(os.path.join(out_dir, "lambda1.png"))
     plt.close()
 
+    # --- Goals reached ---
+    plt.figure(figsize=(7,4))
+    plt.plot(epochs, goals, linewidth=2, color='m')
+    plt.xlabel("Epoch")
+    plt.ylabel("Goals reached")
+    plt.title("Number of successful episodes per epoch")
+    plt.grid(True)
+    plt.savefig(os.path.join(out_dir, "goals_reached1.png"))
+    plt.close()
+
+    # --- Goal reach rate ---
+    plt.figure(figsize=(7,4))
+    plt.plot(epochs, goal_rates, linewidth=2)
+    plt.xlabel("Epoch")
+    plt.ylabel("Goal reach rate")
+    plt.title("Goal reach rate per epoch")
+    plt.ylim(0.0, 1.0)
+    plt.grid(True)
+    plt.savefig(os.path.join(out_dir, "goal_rate1.png"))
+    plt.close()
+
     print(f"[OK] Saved plots to: {out_dir}")
-
-
 
 # -------------------------------------------------------
 # MAIN ENTRY POINT
 # -------------------------------------------------------
 if __name__ == "__main__":
-    DEFAULT_CSV = "results/logs/training.csv"
+    DEFAULT_CSV = "results/logs/training1.csv"
 
     if not os.path.exists(DEFAULT_CSV):
         print(f"[ERROR] CSV not found: {DEFAULT_CSV}")
